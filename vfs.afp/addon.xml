@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="vfs.afp"
+  version="1.0.0"
+  name="AFP support"
+  provider-name="spiff">
+  <requires>
+    <import addon="xbmc.vfs" version="1.0.0"/>
+  </requires>
+  <extension
+    point="xbmc.vfs"
+    protocols="afp"
+    files="true"
+    directories="true"
+    library_linux="vfs.afp.so"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">AFP support</summary>
+    <description lang="en">AFP support</description>
+    <platform>all</platform>
+  </extension>
+</addon>
