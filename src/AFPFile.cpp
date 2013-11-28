@@ -127,8 +127,8 @@ struct AFPContext
   AFPContext()
   {
     size = pos = 0;
-    afp_file_info = NULL;
-    afp_volume = NULL;
+    pFp = NULL;
+    pAfpVol = NULL;
   }
 };
 
