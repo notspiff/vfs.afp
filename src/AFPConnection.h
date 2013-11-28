@@ -37,7 +37,7 @@ public:
   };
   typedef enum eAfpConnectError afpConnnectError;
 
-  static AFPConnection& Get();
+  static CAFPConnection& Get();
   virtual ~CAFPConnection();
 
   afpConnnectError      Connect(const std::string& url);
