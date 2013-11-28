@@ -142,7 +142,7 @@ static bool IsValidFile(const std::string& strFileName)
 }
 
 void* Open(const char* url, const char* hostname,
-           const char* filename2, unsigned int port,
+           const char* filename, unsigned int port,
            const char* options, const char* username,
            const char* password)
 {
@@ -154,15 +154,15 @@ void* Open(const char* url, const char* hostname,
     return NULL;
   }
 
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
-      !CAfpConnection::Get().GetVolume())
+      !CAFPConnection::Get().GetVolume())
     return NULL;
 
   AFPContext* result = new AFPContext;
-  ctx->pAfpVol = CAfpConnection::Get().GetVolume();
+  ctx->pAfpVol = CAFPConnection::Get().GetVolume();
 
-  std::string strPath = CAfpConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url);
 
   if (afp_wrap_open(ctx->pAfpVol, strPath.c_str(), O_RDONLY, &result->pFp))
   {
@@ -200,7 +200,7 @@ void* Open(const char* url, const char* hostname,
 
 bool Close(void* context)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (ctx->pFp && ctx->pAfpVol)
   {
     XBMC->Log(ADDON::LOG_DEBUG, "CAFPFile::Close closing fd %d", ctx->pFp->fileid);
