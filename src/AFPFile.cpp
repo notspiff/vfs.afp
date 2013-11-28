@@ -162,16 +162,16 @@ void* Open(const char* url, const char* hostname,
     return NULL;
 
   AFPContext* result = new AFPContext;
-  ctx->pAfpVol = CAFPConnection::Get().GetVolume();
+  result->pAfpVol = CAFPConnection::Get().GetVolume();
 
   std::string strPath = CAFPConnection::Get().GetPath(url);
 
-  if (afp_wrap_open(ctx->pAfpVol, strPath.c_str(), O_RDONLY, &result->pFp))
+  if (afp_wrap_open(result->pAfpVol, strPath.c_str(), O_RDONLY, &result->pFp))
   {
     char* encoded = XBMC->URLEncode(strPath.c_str());
     std::string strEncode(encoded);
     XBMC->FreeString(encoded);
-    if (afp_wrap_open(ctx->pAfpVol, strEncode.c_str(), O_RDONLY, &result->pFp))
+    if (afp_wrap_open(result->pAfpVol, strEncode.c_str(), O_RDONLY, &result->pFp))
     {
       // write error to logfile
       delete result;
