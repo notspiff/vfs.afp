@@ -203,6 +203,7 @@ void* Open(const char* url, const char* hostname,
 
 bool Close(void* context)
 {
+  AFPContext* ctx = (AFPContext*)context;
   PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (ctx->pFp && ctx->pAfpVol)
   {
