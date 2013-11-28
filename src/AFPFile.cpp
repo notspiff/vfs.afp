@@ -188,7 +188,7 @@ void* Open(const char* url, const char* hostname,
 #else
   struct stat tmpBuffer;
 #endif  
-  if(Stat(url, hostname, filename, options, username, password, &tmpBuffer))
+  if(Stat(url, hostname, filename, port, options, username, password, &tmpBuffer))
   {
     delete result;
     return NULL;
