@@ -21,10 +21,11 @@
 #include <string>
 #include <xbmc/threads/mutex.h>
 
-struct afp_server;
-struct afp_volume;
-struct afp_url;
-struct libafpclient;
+extern "C" {
+#include <afpfs-ng/libafpclient.h>
+#include <afpfs-ng/map_def.h>
+#include <afpfs-ng/midlevel.h>
+}
 
 class CAFPConnection : public PLATFORM::CMutex
 {
