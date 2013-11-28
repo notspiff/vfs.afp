@@ -503,7 +503,7 @@ bool Rename(const char* url, const char* hostname,
     return false;
 
   std::string strFile = CAFPConnection::Get().GetPath(url);
-  std::string strFileNew = CAFPConnection.GetPath(url2);
+  std::string strFileNew = CAFPConnection::Get().GetPath(url2);
 
   int result = afp_wrap_rename(CAFPConnection::Get().GetVolume(),
                                strFile.c_str(), strFileNew.c_str());
