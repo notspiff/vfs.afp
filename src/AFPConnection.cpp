@@ -271,7 +271,7 @@ CAFPConnection::afpConnnectError CAFPConnection::Connect(const std::string& url)
 int CAFPConnection::stat(const std::string& url, struct stat *statbuff)
 {
   PLATFORM::CLockObject lock(*this);
-  std::string strPath = CAFpConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url);
   struct afp_volume *pTmpVol = NULL;
   struct afp_url tmpurl;
   int iResult = -1;
