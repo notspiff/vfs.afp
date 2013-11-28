@@ -18,12 +18,12 @@
  *
  */
 
-#include "xbmc/libXBMC_addon.h"
 #include "xbmc/threads/mutex.h"
 #include <map>
 #include <sstream>
 
 #include "AFPConnection.h"
+#include "xbmc/libXBMC_addon.h"
 
 ADDON::CHelper_libXBMC_addon *XBMC           = NULL;
 
