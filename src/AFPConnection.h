@@ -27,6 +27,38 @@ extern "C" {
 #include <afpfs-ng/midlevel.h>
 }
 
+#ifdef USE_CVS_AFPFS
+#define afp_wrap_open                 afp_ml_open
+#define afp_wrap_close                afp_ml_close
+#define afp_wrap_read                 afp_ml_read
+#define afp_wrap_write                afp_ml_write
+#define afp_wrap_getattr              afp_ml_getattr
+#define afp_wrap_server_full_connect  afp_server_full_connect
+#define afp_wrap_unlink               afp_ml_unlink
+#define afp_wrap_rename               afp_ml_rename
+#define afp_wrap_creat                afp_ml_creat
+#define afp_wrap_readdir              afp_ml_readdir
+#define afp_wrap_readlink             afp_ml_readlink
+#define afp_wrap_mkdir                afp_ml_mkdir
+#define afp_wrap_rmdir                afp_ml_rmdir
+#else
+#define afp_wrap_open                 ml_open
+#define afp_wrap_close                ml_close
+#define afp_wrap_read                 ml_read
+#define afp_wrap_write                ml_write
+#define afp_wrap_getattr              ml_getattr
+#define afp_wrap_server_full_connect  afp_server_full_connect
+#define afp_wrap_unlink               ml_unlink
+#define afp_wrap_rename               ml_rename
+#define afp_wrap_creat                ml_creat
+#define afp_wrap_readdir              ml_readdir
+#define afp_wrap_readlink             ml_readlink
+#define afp_wrap_mkdir                ml_mkdir
+#define afp_wrap_rmdir                ml_rmdir
+#endif
+
+
+
 class CAFPConnection : public PLATFORM::CMutex
 {
 public:
