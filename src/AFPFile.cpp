@@ -524,12 +524,12 @@ void* OpenForWrite(const char* url, const char* hostname,
   PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
-    return false;
+    return NULL;
 
   // we can't open files like afp://file.f or afp://server/file.f
   // if a file matches the if below return false, it can't exist on a afp share.
   if (!IsValidFile(filename))
-    return false;
+    return NULL;
 
   AFPContext* result = new AFPContext;
   result->pAfpVol = CAFPConnection::Get().GetVolume();
