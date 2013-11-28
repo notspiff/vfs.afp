@@ -284,10 +284,10 @@ int Stat(const char* url, const char* hostname,
       !CAFPConnection::Get().GetVolume())
     return -1;
 
-  std::string strPath = CAfpConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url);
 
   struct stat tmpBuffer = {0};
-  int iResult = afp_wrap_getattr(CAfpConnection::Get().GetVolume(), strPath.c_str(), &tmpBuffer);
+  int iResult = afp_wrap_getattr(CAFPConnection::Get().GetVolume(), strPath.c_str(), &tmpBuffer);
 
   if (buffer)
   {
@@ -331,16 +331,16 @@ bool DirectoryExists(const char* url, const char* hostname,
                      const char* options, const char* username,
                      const char* password)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAfpConnection::Get().Connect(url) != CAFPConnection::AfpOk || 
+  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk || 
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFileName(CAfpConnection::Get().GetPath(url));
+  std::string strFileName(CAFPConnection::Get().GetPath(url));
 
   struct stat info;
-  if (afp_wrap_getattr(CAfpConnection::Get().GetVolume(), strFileName.c_str(), &info) != 0)
+  if (afp_wrap_getattr(CAFPConnection::Get().GetVolume(), strFileName.c_str(), &info) != 0)
     return false;
 
   return (info.st_mode & S_IFDIR) ? true : false;
@@ -363,15 +363,15 @@ bool CreateDirectory(const char* url, const char* hostname,
                      const char* options, const char* username,
                      const char* password)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAfpConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
-      !CAfpConnection::Get().GetVolume())
+  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+      !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFilename = CAfpConnection::Get().GetPath(url);
+  std::string strFilename = CAFPConnection::Get().GetPath(url);
 
-  int result = afp_wrap_mkdir(CAfpConnection::Get().GetVolume(), strFilename.c_str(), 0);
+  int result = afp_wrap_mkdir(CAFPConnection::Get().GetVolume(), strFilename.c_str(), 0);
 
   if (result != 0)
     XBMC->Log(ADDON::LOG_ERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -384,15 +384,15 @@ bool RemoveDirectory(const char* url, const char* hostname,
                      const char* options, const char* username,
                      const char* password)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAfpConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFileName = CAfpConnection::Get().GetPath(url);
+  std::string strFileName = CAFPConnection::Get().GetPath(url);
 
-  int result = afp_wrap_rmdir(CAfpConnection::Get().GetVolume(), strFileName.c_str());
+  int result = afp_wrap_rmdir(CAFPConnection::Get().GetVolume(), strFileName.c_str());
 
   if (result != 0 && errno != ENOENT)
   {
@@ -410,7 +410,7 @@ int Truncate(void* context, int64_t size)
 
 int Write(void* context, const void* lpBuf, int64_t uiBufSize)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get();
+  PLATFORM::CLockObject lock(CAFPConnection::Get();
 
   int numberOfBytesWritten = 0;
   uid_t uid;
@@ -435,7 +435,7 @@ int Write(void* context, const void* lpBuf, int64_t uiBufSize)
 unsigned int Read(void* context, void* lpBuf, int64_t uiBufSize)
 {
   AFPContext* ctx = (AFPContext*)context;
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (ctx->pFp == NULL || !ctx->pAfpVol)
     return 0;
 
@@ -470,14 +470,14 @@ bool Delete(const char* url, const char* hostname,
             const char* options, const char* username,
             const char* password)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
-  if (CAfpConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
-      !CAfpConnection::Get().GetVolume())
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
+  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+      !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strPath = CAfpConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url);
 
-  int result = afp_wrap_unlink(CAfpConnection::Get().GetVolume(), strPath.c_str());
+  int result = afp_wrap_unlink(CAFPConnection::Get().GetVolume(), strPath.c_str());
 
   if (result != 0)
     XBMC->Log(ADDON::LOG_ERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -494,15 +494,15 @@ bool Rename(const char* url, const char* hostname,
             const char* options2, const char* username2,
             const char* password2)
 {
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
-  if (CAfpConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
-      !CAfpConnection::Get().GetVolume())
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
+  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+      !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFile = CAfpConnection::Get().GetPath(url);
-  std::string strFileNew = CAfpConnection.GetPath(url2);
+  std::string strFile = CAFPConnection::Get().GetPath(url);
+  std::string strFileNew = CAFPConnection.GetPath(url2);
 
-  int result = afp_wrap_rename(CAfpConnection::Get().GetVolume(),
+  int result = afp_wrap_rename(CAFPConnection::Get().GetVolume(),
                                strFile.c_str(), strFileNew.c_str());
 
   if (result != 0)
@@ -520,7 +520,7 @@ void* OpenForWrite(const char* url, const char* hostname,
   m_fileSize = 0;
   m_fileOffset = 0;
 
-  PLATFORM::CLockObject lock(CAfpConnection::Get());
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
