@@ -410,7 +410,8 @@ int Truncate(void* context, int64_t size)
 
 int Write(void* context, const void* lpBuf, int64_t uiBufSize)
 {
-  PLATFORM::CLockObject lock(CAFPConnection::Get();
+  PLATFORM::CLockObject lock(CAFPConnection::Get());
+  AFPContext* ctx = (AFPContext*)context;
 
   int numberOfBytesWritten = 0;
   uid_t uid;
