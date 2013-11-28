@@ -425,7 +425,7 @@ int Write(void* context, const void* lpBuf, int64_t uiBufSize)
 #else
   char *name = ctx->pFp->name;
   if (strlen(name) == 0)
-    name = ictx->pFp->basename;
+    name = ctx->pFp->basename;
 #endif
   numberOfBytesWritten = afp_wrap_write(ctx->pAfpVol, name, (const char *)lpBuf,
                                         (size_t)uiBufSize, ctx->pos, ctx->pFp, uid, gid);
