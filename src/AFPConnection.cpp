@@ -70,9 +70,9 @@ bool CAFPConnection::initLib()
     m_pAfpClient->scan_extra_fds = NULL;
     m_pAfpClient->loop_started = NULL;
 
-    m_pLibAfp->libafpclient_register(m_pAfpClient);
-    m_pLibAfp->init_uams();
-    m_pLibAfp->afp_main_quick_startup(NULL);
+    libafpclient_register(m_pAfpClient);
+    init_uams();
+    afp_main_quick_startup(NULL);
     XBMC->Log(ADDON::LOG_DEBUG, "AFP: Supported UAMs: %s", get_uam_names_list());
   }
   m_inited = true;
