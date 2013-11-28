@@ -23,6 +23,8 @@
 #include <map>
 #include <sstream>
 
+#include "AFPConnection.h"
+
 ADDON::CHelper_libXBMC_addon *XBMC           = NULL;
 
 extern "C" {
