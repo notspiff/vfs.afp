@@ -65,7 +65,7 @@ bool CAFPConnection::initLib()
   if (!m_inited)
   {
     m_pAfpClient->unmount_volume = NULL;
-    m_pAfpClient->log_for_client = AfpConnectionLog;
+    m_pAfpClient->log_for_client = AFPConnectionLog;
     m_pAfpClient->forced_ending_hook = NULL;
     m_pAfpClient->scan_extra_fds = NULL;
     m_pAfpClient->loop_started = NULL;
