@@ -534,7 +534,7 @@ void* OpenForWrite(const char* url, const char* hostname,
   AFPContext* result = new AFPContext;
   result->pAfpVol = CAFPConnection::Get().GetVolume();
 
-  std::string strPath = gAfpConnection.GetPath(url);
+  std::string strPath = CAfpConnection::Get().GetPath(url);
 
   if (bOverWrite)
   {
