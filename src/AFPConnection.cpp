@@ -395,7 +395,7 @@ void CAFPConnection::AddIdleConnection()
   m_IdleTimeout = 180;
 }
 
-std:.string CAFPConnection::GetPath(const std::string& url)
+std::string CAFPConnection::GetPath(const std::string& url)
 {
   struct afp_url tmpurl;
   std::string ret;
