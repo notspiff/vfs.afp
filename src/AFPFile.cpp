@@ -515,7 +515,7 @@ bool Rename(const char* url, const char* hostname,
 }
 
 void* OpenForWrite(const char* url, const char* hostname,
-                   const char* filename2, unsigned int port,
+                   const char* filename, unsigned int port,
                    const char* options, const char* username,
                    const char* password, bool bOverWrite)
 { 
