@@ -520,8 +520,6 @@ void* OpenForWrite(const char* url, const char* hostname,
                    const char* password, bool bOverWrite)
 { 
   int ret = 0;
-  m_fileSize = 0;
-  m_fileOffset = 0;
 
   PLATFORM::CLockObject lock(CAFPConnection::Get());
   if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
