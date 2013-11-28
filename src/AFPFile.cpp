@@ -21,6 +21,7 @@
 #include "xbmc/threads/mutex.h"
 #include <map>
 #include <sstream>
+#include <stdio.h>
 
 #include "AFPConnection.h"
 #include "xbmc/libXBMC_addon.h"
