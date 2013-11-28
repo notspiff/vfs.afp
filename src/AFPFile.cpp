@@ -26,6 +26,8 @@
 #include "AFPConnection.h"
 #include "xbmc/libXBMC_addon.h"
 
+#define AFP_MAX_READ_SIZE 131072
+
 ADDON::CHelper_libXBMC_addon *XBMC           = NULL;
 
 extern "C" {
