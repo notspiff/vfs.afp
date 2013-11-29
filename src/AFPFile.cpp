@@ -470,7 +470,7 @@ bool Rename(VFSURL* url, VFSURL* url2)
     return false;
 
   std::string strFile = CAFPConnection::Get().GetPath(url->url);
-  std::string strFileNew = CAFPConnection::Get().GetPath(url2.url);
+  std::string strFileNew = CAFPConnection::Get().GetPath(url2->url);
 
   int result = afp_wrap_rename(CAFPConnection::Get().GetVolume(),
                                strFile.c_str(), strFileNew.c_str());
