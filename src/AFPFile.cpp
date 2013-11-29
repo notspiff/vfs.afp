@@ -146,28 +146,25 @@ static bool IsValidFile(const std::string& strFileName)
   return true;
 }
 
-void* Open(const char* url, const char* hostname,
-           const char* filename, unsigned int port,
-           const char* options, const char* username,
-           const char* password)
+void* Open(VFSURL* url)
 {
   // we can't open files like afp://file.f or afp://server/file.f
   // if a file matches the if below return false, it can't exist on a afp share.
-  if (!IsValidFile(filename))
+  if (!IsValidFile(url.filename))
   {
     XBMC->Log(ADDON::LOG_INFO, "FileAfp: Bad URL : '%s'", filename);
     return NULL;
   }
 
   PLATFORM::CLockObject lock(CAFPConnection::Get());
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return NULL;
 
   AFPContext* result = new AFPContext;
   result->pAfpVol = CAFPConnection::Get().GetVolume();
 
-  std::string strPath = CAFPConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url.url);
 
   if (afp_wrap_open(result->pAfpVol, strPath.c_str(), O_RDONLY, &result->pFp))
   {
@@ -183,14 +180,14 @@ void* Open(const char* url, const char* hostname,
     }
   }
   
-  XBMC->Log(ADDON::LOG_DEBUG,"CAFPFile::Open - opened %s, fd=%d",filename, result->pFp ? result->pFp->fileid:-1);
+  XBMC->Log(ADDON::LOG_DEBUG,"CAFPFile::Open - opened %s, fd=%d", url.filename, result->pFp ? result->pFp->fileid:-1);
   
 #ifdef TARGET_POSIX
   struct __stat64 tmpBuffer;
 #else
   struct stat tmpBuffer;
 #endif  
-  if(Stat(url, hostname, filename, port, options, username, password, &tmpBuffer))
+  if(Stat(url, &tmpBuffer))
   {
     delete result;
     return NULL;
@@ -230,7 +227,6 @@ int64_t GetLength(void* context)
   return ctx->size;
 }
 
-//*********************************************************************************************
 int64_t GetPosition(void* context)
 {
   AFPContext* ctx = (AFPContext*)context;
@@ -268,25 +264,19 @@ int64_t Seek(void* context, int64_t iFilePosition, int iWhence)
   return (int64_t)ctx->pos;
 }
 
-bool Exists(const char* url, const char* hostname,
-            const char* filename, unsigned int port,
-            const char* options, const char* username,
-            const char* password)
+bool Exists(VFSURL* url)
 {
-  return Stat(url, hostname, filename, port, options, username, password, NULL) == 0;
+  return Stat(url, NULL) == 0;
 }
 
-int Stat(const char* url, const char* hostname,
-         const char* filename, unsigned int port,
-         const char* options, const char* username,
-         const char* password, struct __stat64* buffer)
+int Stat(VFSURL* url, struct __stat64* buffer)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return -1;
 
-  std::string strPath = CAFPConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url.url);
 
   struct stat tmpBuffer = {0};
   int iResult = afp_wrap_getattr(CAFPConnection::Get().GetVolume(), strPath.c_str(), &tmpBuffer);
@@ -328,18 +318,15 @@ void DisconnectAll()
   CAFPConnection::Get().Deinit();
 }
 
-bool DirectoryExists(const char* url, const char* hostname,
-                     const char* filename, unsigned int port,
-                     const char* options, const char* username,
-                     const char* password)
+bool DirectoryExists(VFSURL* url)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk || 
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk || 
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFileName(CAFPConnection::Get().GetPath(url));
+  std::string strFileName(CAFPConnection::Get().GetPath(url.url));
 
   struct stat info;
   if (afp_wrap_getattr(CAFPConnection::Get().GetVolume(), strFileName.c_str(), &info) != 0)
@@ -348,11 +335,7 @@ bool DirectoryExists(const char* url, const char* hostname,
   return (info.st_mode & S_IFDIR) ? true : false;
 }
 
-void* GetDirectory(const char* url, const char* hostname,
-                   const char* filename, unsigned int port,
-                   const char* options, const char* username,
-                   const char* password, VFSDirEntry** items,
-                   int* num_items)
+void* GetDirectory(VFSURL* url, VFSDirEntry** items, int* num_items)
 {
 }
 
@@ -360,18 +343,15 @@ void FreeDirectory(void* items)
 {
 }
 
-bool CreateDirectory(const char* url, const char* hostname,
-                     const char* filename, unsigned int port,
-                     const char* options, const char* username,
-                     const char* password)
+bool CreateDirectory(VFSURL* url)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFilename = CAFPConnection::Get().GetPath(url);
+  std::string strFilename = CAFPConnection::Get().GetPath(url.url);
 
   int result = afp_wrap_mkdir(CAFPConnection::Get().GetVolume(), strFilename.c_str(), 0);
 
@@ -381,18 +361,15 @@ bool CreateDirectory(const char* url, const char* hostname,
   return (result == 0 || EEXIST == result);
 }
 
-bool RemoveDirectory(const char* url, const char* hostname,
-                     const char* filename, unsigned int port,
-                     const char* options, const char* username,
-                     const char* password)
+bool RemoveDirectory(VFSURL* url)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
 
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFileName = CAFPConnection::Get().GetPath(url);
+  std::string strFileName = CAFPConnection::Get().GetPath(url.url);
 
   int result = afp_wrap_rmdir(CAFPConnection::Get().GetVolume(), strFileName.c_str());
 
@@ -468,17 +445,14 @@ unsigned int Read(void* context, void* lpBuf, int64_t uiBufSize)
   return (unsigned int)bytesRead;
 }
 
-bool Delete(const char* url, const char* hostname,
-            const char* filename2, unsigned int port,
-            const char* options, const char* username,
-            const char* password)
+bool Delete(VFSURL* url)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strPath = CAFPConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url.url);
 
   int result = afp_wrap_unlink(CAFPConnection::Get().GetVolume(), strPath.c_str());
 
@@ -488,22 +462,15 @@ bool Delete(const char* url, const char* hostname,
   return (result == 0);
 }
 
-bool Rename(const char* url, const char* hostname,
-            const char* filename, unsigned int port,
-            const char* options, const char* username,
-            const char* password,
-            const char* url2, const char* hostname2,
-            const char* filename2, unsigned int port2,
-            const char* options2, const char* username2,
-            const char* password2)
+bool Rename(VFSURL* url, VFSURL* url2)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return false;
 
-  std::string strFile = CAFPConnection::Get().GetPath(url);
-  std::string strFileNew = CAFPConnection::Get().GetPath(url2);
+  std::string strFile = CAFPConnection::Get().GetPath(url.url);
+  std::string strFileNew = CAFPConnection::Get().GetPath(url2.url);
 
   int result = afp_wrap_rename(CAFPConnection::Get().GetVolume(),
                                strFile.c_str(), strFileNew.c_str());
@@ -514,27 +481,24 @@ bool Rename(const char* url, const char* hostname,
   return (result == 0);
 }
 
-void* OpenForWrite(const char* url, const char* hostname,
-                   const char* filename, unsigned int port,
-                   const char* options, const char* username,
-                   const char* password, bool bOverWrite)
+void* OpenForWrite(VFSURL* url, bool bOverWrite)
 { 
   int ret = 0;
 
   PLATFORM::CLockObject lock(CAFPConnection::Get());
-  if (CAFPConnection::Get().Connect(url) != CAFPConnection::AfpOk ||
+  if (CAFPConnection::Get().Connect(url.url) != CAFPConnection::AfpOk ||
       !CAFPConnection::Get().GetVolume())
     return NULL;
 
   // we can't open files like afp://file.f or afp://server/file.f
   // if a file matches the if below return false, it can't exist on a afp share.
-  if (!IsValidFile(filename))
+  if (!IsValidFile(url.filename))
     return NULL;
 
   AFPContext* result = new AFPContext;
   result->pAfpVol = CAFPConnection::Get().GetVolume();
 
-  std::string strPath = CAFPConnection::Get().GetPath(url);
+  std::string strPath = CAFPConnection::Get().GetPath(url.url);
 
   if (bOverWrite)
   {
@@ -558,7 +522,7 @@ void* OpenForWrite(const char* url, const char* hostname,
 #else
   struct stat tmpBuffer;
 #endif  
-  if(Stat(url, filename, hostname, port, options, username, password, &tmpBuffer))
+  if(Stat(url, &tmpBuffer))
   {
     delete result;
     return NULL;
@@ -570,11 +534,7 @@ void* OpenForWrite(const char* url, const char* hostname,
   return result;
 }
 
-void* ContainsFiles(const char* url, const char* hostname,
-                    const char* filename2, unsigned int port,
-                    const char* options, const char* username,
-                    const char* password,
-                    VFSDirEntry** items, int* num_items)
+void* ContainsFiles(VFSURL* url, VFSDirEntry** items, int* num_items)
 {
   return NULL;
 }
