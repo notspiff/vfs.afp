@@ -152,7 +152,7 @@ void* Open(VFSURL* url)
   // if a file matches the if below return false, it can't exist on a afp share.
   if (!IsValidFile(url->filename))
   {
-    XBMC->Log(ADDON::LOG_INFO, "FileAfp: Bad URL : '%s'", filename);
+    XBMC->Log(ADDON::LOG_INFO, "FileAfp: Bad URL : '%s'", url->filename);
     return NULL;
   }
 
