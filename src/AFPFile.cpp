@@ -335,8 +335,10 @@ bool DirectoryExists(VFSURL* url)
   return (info.st_mode & S_IFDIR) ? true : false;
 }
 
-void* GetDirectory(VFSURL* url, VFSDirEntry** items, int* num_items)
+void* GetDirectory(VFSURL* url, VFSDirEntry** items,
+                   int* num_items, VFSCallbacks* callbacks)
 {
+  return NULL;
 }
 
 void FreeDirectory(void* items)
