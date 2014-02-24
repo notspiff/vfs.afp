@@ -7,6 +7,7 @@ externalproject_add(afpfs-ng
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
                     UPDATE_COMMAND autoreconf -vif WORKING_DIRECTORY <SOURCE_DIR>
                     CONFIGURE_COMMAND <SOURCE_DIR>/configure --disable-fuse --prefix=${OUTPUT_DIR}
+                    BUILD_COMMAND make -C lib
                     INSTALL_COMMAND ""
                     BUILD_IN_SOURCE 1)
                   
