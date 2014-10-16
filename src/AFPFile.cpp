@@ -389,12 +389,12 @@ int Truncate(void* context, int64_t size)
   return -1;
 }
 
-int Write(void* context, const void* lpBuf, int64_t uiBufSize)
+ssize_t Write(void* context, const void* lpBuf, size_t uiBufSize)
 {
   PLATFORM::CLockObject lock(CAFPConnection::Get());
   AFPContext* ctx = (AFPContext*)context;
 
-  int numberOfBytesWritten = 0;
+  ssize_t numberOfBytesWritten = 0;
   uid_t uid;
   gid_t gid;
 
@@ -409,12 +409,12 @@ int Write(void* context, const void* lpBuf, int64_t uiBufSize)
     name = ctx->pFp->basename;
 #endif
   numberOfBytesWritten = afp_wrap_write(ctx->pAfpVol, name, (const char *)lpBuf,
-                                        (size_t)uiBufSize, ctx->pos, ctx->pFp, uid, gid);
+                                        uiBufSize, ctx->pos, ctx->pFp, uid, gid);
 
   return numberOfBytesWritten;
 }
 
-unsigned int Read(void* context, void* lpBuf, int64_t uiBufSize)
+ssize_t Read(void* context, void* lpBuf, size_t uiBufSize)
 {
   AFPContext* ctx = (AFPContext*)context;
   PLATFORM::CLockObject lock(CAFPConnection::Get());
@@ -433,18 +433,15 @@ unsigned int Read(void* context, void* lpBuf, int64_t uiBufSize)
 
 #endif
   int eof = 0;
-  int bytesRead = afp_wrap_read(ctx->pAfpVol, name, (char *)lpBuf,(size_t)uiBufSize,
+  ssize_t bytesRead = afp_wrap_read(ctx->pAfpVol, name, (char *)lpBuf,(size_t)uiBufSize,
                                 ctx->pos, ctx->pFp, &eof);
   if (bytesRead > 0)
     ctx->pos += bytesRead;
 
   if (bytesRead < 0)
-  {
     XBMC->Log(ADDON::LOG_ERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
-    return 0;
-  }
 
-  return (unsigned int)bytesRead;
+  return bytesRead;
 }
 
 bool Delete(VFSURL* url)
