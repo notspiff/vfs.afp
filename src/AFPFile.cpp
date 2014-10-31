@@ -18,13 +18,13 @@
  *
  */
 
-#include "xbmc/threads/mutex.h"
+#include "kodi/threads/mutex.h"
 #include <map>
 #include <sstream>
 #include <fcntl.h>
 
 #include "AFPConnection.h"
-#include "xbmc/libXBMC_addon.h"
+#include "kodi/libXBMC_addon.h"
 
 #define AFP_MAX_READ_SIZE 131072
 
@@ -32,8 +32,8 @@ ADDON::CHelper_libXBMC_addon *XBMC           = NULL;
 
 extern "C" {
 
-#include "xbmc/xbmc_vfs_dll.h"
-#include "xbmc/IFileTypes.h"
+#include "kodi/xbmc_vfs_dll.h"
+#include "kodi/IFileTypes.h"
 
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
@@ -218,6 +218,8 @@ bool Close(void* context)
     free(ctx->pFp);
     delete ctx;
   }
+
+  return true;
 }
 
 int64_t GetLength(void* context)

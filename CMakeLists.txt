@@ -7,11 +7,11 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 enable_language(CXX)
 
 find_package(AfpClient REQUIRED)
-find_package(xbmc REQUIRED)
-find_package(xbmcplatform REQUIRED)
+find_package(kodi REQUIRED)
+find_package(kodiplatform REQUIRED)
 
-include_directories(${XBMC_INCLUDE_DIR}
-                    ${XBMCPLATFORM_INCLUDE_DIRS}
+include_directories(${KODI_INCLUDE_DIR}
+                    ${KODIPLATFORM_INCLUDE_DIRS}
                     ${AFPCLIENT_INCLUDE_DIRS})
 
 set(AFP_SOURCES src/AFPConnection.cpp

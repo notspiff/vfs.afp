@@ -19,7 +19,7 @@
  */
 
 #include <string>
-#include <xbmc/threads/mutex.h>
+#include <kodi/threads/mutex.h>
 
 extern "C" {
 #include <afpfs-ng/libafpclient.h>
